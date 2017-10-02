@@ -1,0 +1,278 @@
+BitBucket(BB):
+=============
+repo init -u https://shakul_hameed@bitbucket.upc.biz/scm/rdkb/manifests.git -m rpi3-master.xml
+https://shakul_hameed@bitbucket.upc.biz/scm/rdkb/manifests.git
+https://shakul_hameed@bitbucket.upc.biz/scm/rmc/meta-cmf.git
+
+repo init -u ssh://git@bitbucket.upc.biz:7999/rdkb/manifests.git -m rpi3-master.xml
+repo sync
+
+MACHINE="raspberrypi-rdk-broadband" source ./meta-cmf-raspberrypi/setup-environment
+
+echo 'KERNEL_IMAGETYPE = "uImage"' >> conf/local.conf
+echo 'ENABLE_UART = "1"' >> conf/local.conf
+
+bitbake rdk-generic-broadband-image
+
+
+Listen to port:
+================
+netstat -anlp | grep -w LISTEN
+netstat -lnp 
+
+lxc issue:
+===========
+dnsmasq: failed to bind DHCP server socket: Address already in use
+Failed to setup lxc-net.
+
+lxc-create -t /usr/share/lxc/templates/lxc-debian -n sha 
+
+lxc-create -n name -t alphine
+lxc-start -n name -d
+lxc-attach -n name
+
+dbus:-dependency loop:
+=====================
+PACKAGECONFIG_remove = "systemd"
+
+CMF:
+======
+
+repo init -u https://code.rdkcentral.com/r/manifests -m rdkb-raspberrypi.xml -b krogoth
+repo sync
+
+repo init -u https://code.rdkcentral.com/r/manifests -m rdkb.xml -b rdkb-20170830-rpi
+repo sync
+
+Files in Setup:
+==============
+wifi_hal.c:
+/home/rdkb2/shakul/work/setup/sha/build-raspberrypi-rdk-broadband/tmp/work/raspberrypi_rdk_broadband-rdk-linux-gnueabi/rdk-generic-broadband-image/1.0-r0/rootfs-dbg/usr/src/debug/hal-wifi-generic/2.1+gitAUTOINC+895a9c8d7f-r0/git/source/wifi/wifi_hal.c
+
+TDK:
+====
+ExpectedStdList = ['a','n','ac'];
+for item in ActualList:
+    if item in ExpectedStdList:
+        returnStatus = "0";
+    else:
+        returnStatus = "1";
+        break;
+if "0" in returnStatus:
+    #Set the result status of execution
+    tdkTestObj.setResultStatus("SUCCESS");
+    print "TEST STEP 2: Validate the Supported standards with operating Freq";
+    print "EXPECTED RESULT 2: Supported standards should be in ['a','n','ac'] when radioIndex is 1";
+    print "ACTUAL RESULT 2: Supported standards : ", ActualList;
+    #Get the result of execution
+    print "[TEST EXECUTION RESULT] : SUCCESS";
+else:
+    #Set the result status of execution
+    tdkTestObj.setResultStatus("FAILURE");
+    print "TEST STEP 2: Validate the Supported standards with operating Freq";
+    print "EXPECTED RESULT 2: Supported standards should be in ['a','n','ac'] when radioIndex is 1";
+    print "ACTUAL RESULT 2: Supported standards : ", ActualList;
+    #Get the result of execution
+    print "[TEST EXECUTION RESULT] : FAILURE";
+
+RDK Emulator:
+=============
+https://wiki.rdkcentral.com/display/RDK/RDK-B+Emulator+Build+Guide
+
+Yocto issues:
+=============
+vmdk image issue:
+	
+https://github.com/LinkJVM/openembedded-core/blob/master/meta/classes/image-vmdk.bbclass
+https://patchwork.openembedded.org/patch/130963/
+
+glibc issue:
+
+https://github.com/ipxe/ipxe/commit/238050dfd46e3c4a87329da1d48b4d8dde5af8a1
+
+error: bp cannot be used in asm here
+FIX: https://sourceware.org/bugzilla/attachment.cgi?id=9594&action=diff
+
+systemd issue:
+
+error: /git/src/udev/mtd_probe/mtd_probe.h:25:9: error: unknown type name 'uint8_t
+FIX: https://www.gonza.cl/?p=2646
+
+https://patchwork.openembedded.org/patch/123631/
+https://patchwork.openembedded.org/patch/118909/
+
+curl issue:
+http://cgit.openembedded.org/openembedded-core/tree/meta/recipes-support/curl/
+
+firefox issue:
+configure: error: you don't have NSS installed or your version is too old
+https://github.com/OSSystems/meta-browser/pull/43#issuecomment-312721620
+
+Another solution is using built-in nss & nspr instead of system's one.
+To use it remove or comment out following lines in your meta-browser/recipes-mozilla/firefox/firefox/mozconfig
+
+  ac_add_options --with-system-nss
+  ac_add_options --with-system-nspr
+
+
+apparmour stop:
+===============
+   sudo service apparmor stop
+   sudo service apparmor teardown
+
+Speed test:
+===========
+http://labs.comcast.com/our-speed-test-is-now-available-open-source
+comcast speedtest repo: https://github.com/Comcast/Speed-testJS.git
+
+Change string in folder:
+=========================
+
+grep -rl matchstring somedir/ | xargs sed -i 's/string1/string2/g'
+
+boardfarm Study:
+================
+netperf -V
+ulogd
+iperf
+uci
+network restart
+
+
+mysql:
+======
+mysql -u root -p
+root
+use rdktesttoolproddb;
+SELECT * FROM script_file WHERE script_name="TS_WIFIHAL_getRadioStatsReceivedSignalLevel" ;
+
+Test case publisher:
+====================
+Remember for the output file
+python tdk_tc_publisher.py -m /home/rdkb2/shakul/Backup/haltesting/cmhal/cmhal.csv
+
+sudo ./bft  -b rpi3 -r /home/rdkb2/shakul/work/setup/sha/build-raspberrypi-rdk-broadband/tmp/deploy/images/raspberrypi-rdk-broadband/rdkb-generic-broadband-image_default_20170830105530.rootfs.ext3 -e Uname
+
+setup:
+
+/home/rdkb2/shakul/work/setup/sha/build-raspberrypi-rdk-broadband/tmp/deploy/images/raspberrypi-rdk-broadband/
+
+rootfsimage:
+
+rdkb-generic-broadband-image_default_20170814081907-dbg.rootfs.tar.gz
+rdkb-generic-broadband-image_default_20170814081907.rootfs.rpi-sdimg
+rdkb-generic-broadband-image_default_20170814081907.rootfs.ext3
+rdkb-generic-broadband-image_default_20170814081907.rootfs.tar.gz
+
+rdkb-generic-broadband-image_default_20170830105530.rootfs.ext3
+
+
+sudo ./bft -b rpi3 -r /home/rdkb2/shakul/work/setup/sha/build-raspberrypi-rdk-broadband/tmp/deploy/images/raspberrypi-rdk-broadband/rdkb-generic-broadband-image_default_20170814081907.rootfs.rpi-sdimg -e Uname
+
+sudo ./bft -x connect -b rpi3 -e Uname
+
+String to char* in cpp:
+=======================
+std::string ssidString = NULL;
+ssidString = req["ssidString"].asString();
+char *cstr = new char[ssidString.length() + 1];
+strcpy(cstr, ssidString.c_str());
+
+
+Zephyr:
+=======
+https://support.getzephyr.com/hc/en-us/community/posts/201859229-ZAPI-usage
+
+Personal:
+----------
+pattimandram,solomon papaiya pattimandram,sun tv pattimandram,sirappu nagaisuvai pattimandram,raja bhrathi basker pattimandram,
+tamil humor speech,tamil pattimandram, sun tv humor pattimandram, sun tv shows,
+
+ilayaraja,ilayaraja songs,ilayaraja melodies,ilayaraja best melody,raja sir music,isai yaani ilayaraja best songs,
+
+whatsapp,whatapp tamil,whatapp tamil status,whatapp sad songs,whatsapp best status,
+
+Aadhar Number: 971043054125
+transferwise - sh33@gmail Wh=
+send 500 500
+
+LINUX:
+========
+cat /proc/vmstat   -> virtual memory statistics
+cat /proc/slabinfo -> Frequently used objects in the Linux kernel (buffer heads, inodes, dentries, etc.)  have their own cache.  
+		      The file /proc/slabinfo gives statistics on these caches
+
+cat ~/.bash_history | grep repo  --> list all history
+cd ~/.local/share --> All local logs
+gedit ~/.local/share/recently-used.xbel --> gedit informations
+cd ~/.config/google-chrome  --> Chrome details
+last --> to know the login history
+
+
+git config --global user.name "shakul hameed"
+git config --global user.email "shameed.contractor@libertyglobal.com"
+git commit --amend
+git push origin HEAD:refs/for/master
+
+Functions list in c file:
+==========================
+cat sample.c | grep -E "^\w" | sed 's/$/;/'
+
+github:
+=======
+https://github.com/mbanders
+https://github.com/mattsm
+https://github.com/ericschultz?tab=repositories
+https://github.com/mattsm/  -> Mathew
+
+https://github.com/michellabbe/docker-speedtest-mini
+
+
+Dbus info:
+==========
+https://dbus.freedesktop.org/doc/api/html/group__DBusMessage.html#details
+
+snmp:
+=====
+snmpd.conf file needed
+cp /usr/ccsp/snmp/snmpd.conf etc/snmp/.
+
+run snmp_subagent from /usr/ccsp/snmp
+
+add the firewall rules...
+
+iptables -A wan2self_mgmt -p udp -m udp --dport 161 -j ACCEPT
+iptables -A wan2self_mgmt -p tcp -m tcp --dport 161 -j ACCEPT
+
+cmd ex: snmpget -v 2c -c public 10.65.85.99 1.3.6.1.4.1.17270.50.3.1.1.0
+
+snmpwalk:
+snmpwalk -mALL -v1 -cpublic 10.0.0.1 system
+
+snmpwalk -v 2c -c public 10.65.85.14 1.3.6.1.4.1.17270.50.2.2.3.3.1.3.10001
+
+
+Edit network connections:
+==========================
+ADDRESS : 192.168.122.20 
+NET MASK: 24 or 255.255.255.0
+GATE WAY: 192.168.122.1
+
+Informative:
+=============
+shak33- Wh=
+shakulblog - YOUt123$
+letfr	- love
+shahsthedalgal - love
+techshakul - love
+mncworker - Wh-
+
+hrblock: shak33 - I_02
+transferwise: sha33 - Wh=
+ 
+
+Links:
+=======
+icici:https://inrprepaid.icicibank.com/customer/checkLoginAttempt.action
+sha33 Wh=  tas - I_02
+
